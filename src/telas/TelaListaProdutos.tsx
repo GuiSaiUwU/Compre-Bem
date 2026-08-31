@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import { FlatList, View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { Produto, RootStackParamList } from '../types';
-import { produtosMock } from '../dados/DadosMockados';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { produtosMock } from '../dados/DadosMockados';
+import type { Produto, RootStackParamList } from '../types';
 
 function ProdutoItem({ produto, onPress }: { produto: Produto; onPress: () => void }) {
   return (
@@ -19,8 +18,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'>;
 
 export default function TelaListaProdutos({ navigation }: Props) {
   return (
-    <SafeAreaView>
-
+    <SafeAreaView style={styles.safeareaview}>
       <View style={styles.container}>
         <FlatList
           data={produtosMock}
@@ -38,6 +36,10 @@ export default function TelaListaProdutos({ navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
+  safeareaview: {
+    flex: 1,
+    backgroundColor: '#676767'
+  },
   container: {
     flex: 1,
     padding: 16,

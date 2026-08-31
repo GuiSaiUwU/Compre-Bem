@@ -1,12 +1,11 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types';
-import type { Produto } from '../types';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type { Produto, RootStackParamList } from '../types';
 
 function DetalheProduto({ produto }: { produto: Produto }) {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.safeareaview}>
       <View style={styles.container}>
         <Text style={styles.nome}>{produto.nome}</Text>
         <Text style={styles.preco}>{produto.preco}</Text>
@@ -26,6 +25,10 @@ export default function TelaDetalheProduto({ route }: Props) {
 
 
 const styles = StyleSheet.create({
+  safeareaview: {
+    flex: 1,
+    backgroundColor: '#676767'
+  },
   container: {
     flex: 1,
     padding: 24,

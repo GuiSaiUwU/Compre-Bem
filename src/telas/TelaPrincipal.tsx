@@ -1,8 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
-import TelaListaProdutos from "./TelaListaProdutos";
 import TelaDetalheProduto from "./TelaDetalheProduto";
+import TelaListaProdutos from "./TelaListaProdutos";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
