@@ -2,14 +2,17 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types';
 import type { Produto } from '../types';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function DetalheProduto({ produto }: { produto: Produto }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.nome}>{produto.nome}</Text>
-      <Text style={styles.preco}>{produto.preco}</Text>
-      {produto.descricao && <Text style={styles.descricao}>{produto.descricao}</Text>}
-    </View>
+    <SafeAreaView>
+      <View style={styles.container}>
+        <Text style={styles.nome}>{produto.nome}</Text>
+        <Text style={styles.preco}>{produto.preco}</Text>
+        {produto.descricao && <Text style={styles.descricao}>{produto.descricao}</Text>}
+      </View>
+    </SafeAreaView>
   );
 }
 

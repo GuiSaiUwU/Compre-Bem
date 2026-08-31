@@ -3,6 +3,7 @@ import { FlatList, View, Text, TextInput, Button, TouchableOpacity, StyleSheet, 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { Produto, RootStackParamList } from '../types';
 import { produtosMock } from '../dados/DadosMockados';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function ProdutoItem({ produto, onPress }: { produto: Produto; onPress: () => void }) {
   return (
@@ -18,18 +19,21 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'>;
 
 export default function TelaListaProdutos({ navigation }: Props) {
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={produtosMock}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <ProdutoItem
-            produto={item}
-            onPress={() => navigation.navigate('DetalheProduto', { produto: item })}
-          />
-        )}
-      />
-    </View>
+    <SafeAreaView>
+
+      <View style={styles.container}>
+        <FlatList
+          data={produtosMock}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <ProdutoItem
+              produto={item}
+              onPress={() => navigation.navigate('DetalheProduto', { produto: item })}
+            />
+          )}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
