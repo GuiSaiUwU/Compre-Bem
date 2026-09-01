@@ -6,6 +6,6 @@ export type RootStackParamList = {
 export type Produto = {
   id: number;
   nome: string;
-  preco: string;
+  preco: float;
   descricao?: string;
 };

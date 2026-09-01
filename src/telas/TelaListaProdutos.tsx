@@ -1,8 +1,8 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { produtosMock } from '../dados/DadosMockados';
 import type { Produto, RootStackParamList } from '../types';
+import { useState } from 'react';
 
 function ProdutoItem({ produto, onPress }: { produto: Produto; onPress: () => void }) {
   return (
@@ -16,12 +16,21 @@ function ProdutoItem({ produto, onPress }: { produto: Produto; onPress: () => vo
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'>;
 
-export default function TelaListaProdutos({ navigation }: Props) {
+export default function TelaListaProdutos({ navigation, produtos, adicionarProduto }: { navigation: Props['navigation'], produtos: Produto[], adicionarProduto: (p: Produto) => void }) {
+  const [nome, setNome] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [preco, setPreco] = useState('');
+
+
+
   return (
     <SafeAreaView style={styles.safeareaview}>
       <View style={styles.container}>
+        <TextInput style={styles.input} placeholder='Nome' value={nome} onChangeText={setNome} />
+        <TextInput style={styles.input} placeholder='Descrição' value={descricao} onChangeText={setDescricao} />
+        <TextInput style={styles.input} placeholder='Preço' keyboardType='numeric' value={preco} onChangeText={setPreco} />
         <FlatList
-          data={produtosMock}
+          data={produtos}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <ProdutoItem
@@ -49,7 +58,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
     backgroundColor: '#FFFFFF',
-    color: '#1A202C',
+    color: '#000000',
     borderRadius: 8,
     padding: 10,
     marginBottom: 8
