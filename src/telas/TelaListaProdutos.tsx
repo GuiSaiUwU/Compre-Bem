@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, FlatList, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Produto, RootStackParamList } from '../types';
 import { useState } from 'react';
@@ -19,16 +19,54 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'>;
 export default function TelaListaProdutos({ navigation, produtos, adicionarProduto }: { navigation: Props['navigation'], produtos: Produto[], adicionarProduto: (p: Produto) => void }) {
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
+  const [erro, setErro] = useState('');
   const [preco, setPreco] = useState('');
 
+  function validarESalvar() {
+    if (nome.trim() === '') {
+      setErro('O nome não pode ficar vazio.');
+      return;
+    }
 
+    const precoNumerico = Number(preco.trim().replace(',', '.'));
+    if (preco.trim() === '' || isNaN(precoNumerico) || precoNumerico <= 0) {
+      setErro('O preço precisa ser um número maior que zero e estar formatado corretamente (ex.: 89,90).');
+      return;
+    }
+
+    if (descricao.length > 140) {
+      /* Pode ser vazia, sem problemas */
+      setErro('A descrição não deve ser maior que 140 caracteres.')
+      return;
+    }
+
+    adicionarProduto({
+      id: produtos.length,
+      nome,
+      preco: `R$ ${precoNumerico.toFixed(2).replace('.', ',')}`,
+      descricao: descricao,
+    });
+
+    setNome('');
+    setPreco('');
+    setDescricao('');
+    setErro('');
+    Keyboard.dismiss();
+  }
 
   return (
     <SafeAreaView style={styles.safeareaview}>
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder='Nome' value={nome} onChangeText={setNome} />
-        <TextInput style={styles.input} placeholder='Descrição' value={descricao} onChangeText={setDescricao} />
-        <TextInput style={styles.input} placeholder='Preço' keyboardType='numeric' value={preco} onChangeText={setPreco} />
+        <View style={styles.cadastro}>
+          <TextInput style={styles.input} placeholder='Nome' value={nome} onChangeText={setNome} />
+          <TextInput style={styles.input} placeholder='Descrição' value={descricao} onChangeText={setDescricao} />
+          <TextInput style={styles.input} placeholder='Preço' keyboardType='numeric' value={preco} onChangeText={setPreco} />
+
+          {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+
+          <Button title='Cadastrar produto' onPress={validarESalvar}/>
+        </View>
+
         <FlatList
           data={produtos}
           keyExtractor={(item) => item.id.toString()}
@@ -45,6 +83,10 @@ export default function TelaListaProdutos({ navigation, produtos, adicionarProdu
 }
 
 const styles = StyleSheet.create({
+  cadastro: {
+    marginBottom: 16,
+    gap: 8
+  },
   safeareaview: {
     flex: 1,
     backgroundColor: '#676767'
@@ -65,7 +107,7 @@ const styles = StyleSheet.create({
   },
   erro: {
     color: '#E53E3E',
-    marginBottom: 8,
+    marginTop: -12,
     fontWeight: '500'
   },
   item: {

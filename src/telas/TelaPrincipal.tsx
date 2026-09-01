@@ -8,7 +8,6 @@ import { useState } from "react";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 let listaProduto: Produto[] = [
-    {id: 1, nome: "Teste", preco: 99.9, descricao: "Testando"}
 ]
 
 export default function TelaPrincipal() {
