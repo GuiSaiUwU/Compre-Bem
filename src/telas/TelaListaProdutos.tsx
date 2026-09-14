@@ -103,6 +103,8 @@ const styles = StyleSheet.create({
     color: '#000000',
     borderRadius: 8,
     padding: 10,
+    minHeight: 44,
+    justifyContent: 'center',
     marginBottom: 8
   },
   erro: {
