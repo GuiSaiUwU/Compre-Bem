@@ -1,14 +1,17 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Button, FlatList, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { Produto, RootStackParamList } from '../types';
-import { useState } from 'react';
+import type { RootStackParamList } from '../types';
+
+import { useEffect, useState } from 'react';
+import { Produto } from '../types/produto';
+import { getProdutos } from '../service/produto-service';
 
 function ProdutoItem({ produto, onPress }: { produto: Produto; onPress: () => void }) {
   return (
     <TouchableOpacity style={styles.item} onPress={onPress}>
       <Text style={styles.nome}>{produto.nome}</Text>
-      <Text style={styles.preco}>{produto.preco}</Text>
+      <Text style={styles.preco}>RS ${produto.preco}</Text>
     </TouchableOpacity>
   );
 }
@@ -16,60 +19,49 @@ function ProdutoItem({ produto, onPress }: { produto: Produto; onPress: () => vo
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'>;
 
-export default function TelaListaProdutos({ navigation, produtos, adicionarProduto }: { navigation: Props['navigation'], produtos: Produto[], adicionarProduto: (p: Produto) => void }) {
-  const [nome, setNome] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [erro, setErro] = useState('');
-  const [preco, setPreco] = useState('');
-
-  function validarESalvar() {
-    if (nome.trim() === '') {
-      setErro('O nome não pode ficar vazio.');
-      return;
-    }
-
-    const precoNumerico = Number(preco.trim().replace(',', '.'));
-    if (preco.trim() === '' || isNaN(precoNumerico) || precoNumerico <= 0) {
-      setErro('O preço precisa ser um número maior que zero e estar formatado corretamente (ex.: 89,90).');
-      return;
-    }
-
-    if (descricao.length > 140) {
-      /* Pode ser vazia, sem problemas */
-      setErro('A descrição não deve ser maior que 140 caracteres.')
-      return;
-    }
-
-    adicionarProduto({
-      id: produtos.length,
-      nome,
-      preco: `R$ ${precoNumerico.toFixed(2).replace('.', ',')}`,
-      descricao: descricao,
+export default function TelaListaProdutos({ navigation }: { navigation: Props['navigation'] }) {
+  const [produtos, setProdutos] = useState<Produto[]>();
+  const [pagina, setPagina] = useState(0);
+  const [filtro, setFiltro] = useState('');
+  const [totalPages, setTotalPages] = useState(0);
+  const [isFirst, setIsFirst] = useState(true);
+  const [isLast, setIsLast] = useState(false);
+  
+  useEffect(() => {
+    getProdutos(pagina, filtro).then((res) => {
+      setProdutos(res.content);
+      setTotalPages(res.totalPages);
+      setIsFirst(res.first);
+      setIsLast(res.last);
     });
+  }, [pagina, filtro]);
 
-    setNome('');
-    setPreco('');
-    setDescricao('');
-    setErro('');
-    Keyboard.dismiss();
+
+
+
+  function paginaAnterior() {
+    if (!isFirst) {
+      setPagina((prev) => prev - 1);
+    }
   }
 
+  function proximaPagina() {
+    if (!isLast) {
+      setPagina((prev) => prev + 1);
+    }
+  }
   return (
     <SafeAreaView style={styles.safeareaview}>
       <View style={styles.container}>
+        <Text style={[styles.item, {'color': 'red'}]}> A TELA DE CADASTRO TA EM REFORMA </Text>
+        
         <View style={styles.cadastro}>
-          <TextInput style={styles.input} placeholder='Nome' value={nome} onChangeText={setNome} />
-          <TextInput style={styles.input} placeholder='Descrição' value={descricao} onChangeText={setDescricao} />
-          <TextInput style={styles.input} placeholder='Preço' keyboardType='numeric' value={preco} onChangeText={setPreco} />
-
-          {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
-
-          <Button title='Cadastrar produto' onPress={validarESalvar}/>
+          <TextInput style={styles.input} placeholder='Busca' value={filtro} onChangeText={setFiltro} />
         </View>
 
         <FlatList
           data={produtos}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.produtoId}
           renderItem={({ item }) => (
             <ProdutoItem
               produto={item}
@@ -77,6 +69,28 @@ export default function TelaListaProdutos({ navigation, produtos, adicionarProdu
             />
           )}
         />
+
+        <View style={styles.paginacaoContainer}>
+          <TouchableOpacity
+            style={[styles.botaoPaginacao, isFirst && styles.botaoDesabilitado]}
+            onPress={paginaAnterior}
+            disabled={isFirst}
+          >
+            <Text style={styles.textoBotao}>⬇️ Anterior</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.textoPagina}>
+            {pagina + 1} / {totalPages || 1}
+          </Text>
+
+          <TouchableOpacity
+            style={[styles.botaoPaginacao, isLast && styles.botaoDesabilitado]}
+            onPress={proximaPagina}
+            disabled={isLast}
+          >
+            <Text style={styles.textoBotao}>Próximo ⬆️</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -135,5 +149,36 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#3182CE',
     fontWeight: '600'
+  },
+  paginacaoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  botaoPaginacao: {
+    backgroundColor: '#3182CE',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+  },
+  botaoDesabilitado: {
+    backgroundColor: '#CBD5E0',
+  },
+  textoBotao: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  textoPagina: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4A5568',
   },
 });
