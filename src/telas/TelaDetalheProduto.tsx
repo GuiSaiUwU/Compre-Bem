@@ -1,7 +1,8 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { Produto, RootStackParamList } from '../types';
+import type { RootStackParamList } from '../types';
+import { Produto } from '../types/produto';
 
 function DetalheProduto({ produto }: { produto: Produto }) {
   return (

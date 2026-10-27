@@ -26,18 +26,15 @@ export default function TelaListaProdutos({ navigation }: { navigation: Props['n
   const [totalPages, setTotalPages] = useState(0);
   const [isFirst, setIsFirst] = useState(true);
   const [isLast, setIsLast] = useState(false);
-  
+
   useEffect(() => {
     getProdutos(pagina, filtro).then((res) => {
       setProdutos(res.content);
-      setTotalPages(res.totalPages);
-      setIsFirst(res.first);
-      setIsLast(res.last);
+      setTotalPages(res.page.totalPages);
+      setIsFirst(res.page.number == 0);
+      setIsLast(res.page.number == (res.page.totalPages - 1));
     });
   }, [pagina, filtro]);
-
-
-
 
   function paginaAnterior() {
     if (!isFirst) {
@@ -50,11 +47,14 @@ export default function TelaListaProdutos({ navigation }: { navigation: Props['n
       setPagina((prev) => prev + 1);
     }
   }
+
   return (
     <SafeAreaView style={styles.safeareaview}>
       <View style={styles.container}>
-        <Text style={[styles.item, {'color': 'red'}]}> A TELA DE CADASTRO TA EM REFORMA </Text>
-        
+        <View style={[styles.item, { 'padding': 2, 'backgroundColor': 'rgb(33, 150, 243)' }]}>
+          <Button title='Cadastrar produto' onPress={() => { navigation.navigate('CadastroProduto') }} />
+        </View>
+
         <View style={styles.cadastro}>
           <TextInput style={styles.input} placeholder='Busca' value={filtro} onChangeText={setFiltro} />
         </View>

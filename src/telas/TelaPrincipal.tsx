@@ -3,6 +3,7 @@ import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navig
 import { RootStackParamList } from "../types";
 import TelaDetalheProduto from "./TelaDetalheProduto";
 import TelaListaProdutos from "./TelaListaProdutos";    
+import TelaCadastro from "./TelaCadastro";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -19,6 +20,7 @@ export default function TelaPrincipal() {
                     )}
                 </Stack.Screen>
                 <Stack.Screen name="DetalheProduto" component={TelaDetalheProduto} />
+                <Stack.Screen name="CadastroProduto" component={TelaCadastro}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

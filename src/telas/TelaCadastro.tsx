@@ -58,6 +58,8 @@ export default function TelaCadastro({ navigation }: { navigation: Props['naviga
         setDescricao('');
         setErro('');
         Keyboard.dismiss();
+
+        
     }
 
 
